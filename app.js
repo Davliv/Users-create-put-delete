@@ -14,13 +14,13 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 
 app.get('/users', (req, res) => {
-  users.find();
-
-return res.send('read');
-
+  users.find((err, result) => {
+      if(err) {
+        return res.send('server error');
+      }
+        return res.send(result);
+    });
 });
-
-
 app.post('/users', (req, res) => {
   if(req.body.username && req.body.password && req.body.email && req.body.age){
     users.create({
