@@ -12,7 +12,6 @@ const users = users_db.model('users', Userschema);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-
 app.get('/users', (req, res) => {
   if(req.query){
     let q = req.query.q;
@@ -75,7 +74,3 @@ app.put('/users/:id', (req, res) => {
     }
 });
 app.listen(6000);
-
-
-//req.body.password && req.body.password_confirmation &&
-  //password: req.body.password,
