@@ -51,5 +51,31 @@ app.get('/users/:id', (req, res) => {
           return res.send(result);
       });
 });
-
+app.put('/users/:id', (req, res) => {
+  let id = req.params.id;
+  let queryObject = {};
+  if(req.body.email && req.body.email.length){
+    queryObject.email = req.body.email;
+  }
+  if(req.body.age && req.body.age.length){
+    queryObject.age = req.body.age;
+  }
+  if(req.body.password && req.body.password_confirmation && req.body.password.length && req.body.password === req.body.password_confirmation){
+    queryObject.password = req.body.password;
+  }
+  if(Object.keys(queryObject).length){
+    users.updateOne({_id: id},queryObject, (err, result) => {
+        if(err) {
+          return res.send('server error');
+    }
+          return res.send(result);
+      });
+    }else{
+          return res.send('empty form');
+    }
+});
 app.listen(6000);
+
+
+//req.body.password && req.body.password_confirmation &&
+  //password: req.body.password,
