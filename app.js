@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.get('/users', (req, res) => {
   if(req.query){
     let q = req.query.q;
-    users.find({ $or:[ {"username": new RegExp(q,'i')}, {'email':new RegExp(q,'i')}]},
+    users.find({ $or:[ {'username': new RegExp(q,'i')}, {'email':new RegExp(q,'i')}]},
       (err, result) => {
         if(err) {
           return res.send('server error');
