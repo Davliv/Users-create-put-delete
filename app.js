@@ -14,12 +14,16 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 
 app.get('/users', (req, res) => {
-  users.find((err, result) => {
-      if(err) {
-        return res.send('server error');
-      }
-        return res.send(result);
-    });
+  if(req.query){
+    let q = req.query.q;
+    users.find({ $or:[ {"username": new RegExp(q,'i')}, {'email':new RegExp(q,'i')}]},
+      (err, result) => {
+        if(err) {
+          return res.send('server error');
+        }
+          return res.send(result);
+      });
+  }
 });
 app.post('/users', (req, res) => {
   if(req.body.username && req.body.password && req.body.email && req.body.age){
@@ -36,7 +40,6 @@ app.post('/users', (req, res) => {
     });
   }
 });
-
 app.get('/users/:id', (req, res) => {
   let id = req.params.id;
   users.findOne({
@@ -48,8 +51,5 @@ app.get('/users/:id', (req, res) => {
           return res.send(result);
       });
 });
-
-
-
 
 app.listen(6000);
