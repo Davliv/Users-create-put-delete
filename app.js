@@ -29,15 +29,6 @@ app.post('/users', (req, res) => {
   if(req.body.username && req.body.password && req.body.email && req.body.age){
     if(!validation.validateEmail(req.body.email)){
       return res.send({success:false,msg:'Not valid email'}).status(400);
-    }else{
-      const findUser = async function (params) {
-        try {  return await users.findOne(params)
-        }catch(err) { return res.send({success:false,msg:'Server error'}).status(500); }
-      }
-      const result = findUser({email: req.body.email})
-      if(result){
-         return res.send({success:false,msg:'Email allready is used'}).status(400);
-      }
     }
     if(!validation.validatePassword(req.body.password)){
       return res.send({success:false,msg:'Not valid password'}).status(400);
