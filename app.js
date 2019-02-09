@@ -72,20 +72,34 @@ app.get('/users/:id', (req, res) => {
         }
         return res.send(result).status(200);
       });
-    res.send();
 });
 
 app.put('/users/:id', (req, res) => {
   let id = req.params.id;
   let queryObject = {};
+  if(req.body.username && req.body.username.length){
+    if(!validation.validateUsername(req.body.username)){
+      return res.send({success:false,msg:'Not valid username'}).status(400);
+    }
+      queryObject.username = req.body.username;
+  }
   if(req.body.email && req.body.email.length){
+    if(!validation.validateEmail(req.body.email)){
+      return res.send({success:false,msg:'Not valid email'}).status(400);
+    }
     queryObject.email = req.body.email;
   }
   if(req.body.age && req.body.age.length){
+    if(!validation.validateAge(req.body.age)){
+      return res.send({success:false,msg:'Not valid age'}).status(400);
+    }
     queryObject.age = req.body.age;
   }
   if(req.body.password && req.body.password_confirmation && req.body.password.length && req.body.password === req.body.password_confirmation){
     queryObject.password = req.body.password;
+    if(!validation.validatePassword(req.body.password)){
+      return res.send({success:false,msg:'Not valid password'}).status(400);
+    }
   }
   if(Object.keys(queryObject).length){
     users.updateOne({_id: id},queryObject, (err, result) => {
