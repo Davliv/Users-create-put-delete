@@ -10,6 +10,7 @@ const Model = require('./model');
 const Path =  require('path');
 const multer  = require('multer');
 const Userschema = require('./model');
+const Constantss = require('./constants');
 const users_db = mongoose.createConnection("mongodb://localhost:27017/users", { useNewUrlParser: true });
 const users = users_db.model('users', Userschema);
 
@@ -98,7 +99,8 @@ app.post('/users', (req, res) => {
           username: req.body.username,
           password: req.body.password,
           email: req.body.email,
-          age: req.body.age
+          age: req.body.age,
+          role: req.body.role
       }, (err, result) => {
       if (err) {
         return res.send({success:false,msg:'Server error'}).status(Settings.HTTPStatus.INTERNAL_SERVER_ERROR);
@@ -152,7 +154,6 @@ app.put('/users/:id',Key ,(req, res) => {
       queryObject.password = req.body.password;
       if (!validation.validatePassword(req.body.password)) return res.send({success:false,msg:'Not valid password'}).status(Settings.HTTPStatus.NOT_FOUND);
     }
-    //console.log(queryObject);
     if (Object.keys(queryObject).length) {
       users.updateOne({_id: id},queryObject, (err, result) => {
           if (err) {
@@ -163,5 +164,21 @@ app.put('/users/:id',Key ,(req, res) => {
           } else {
             return res.send('empty form');
       }
+});
+app.delete('/users/:id', (req, res) => {
+    let adminID = req.params.id;
+    let userToDelete = req.body.id;
+    users.findOne({
+      _id: adminID
+    }, (err, result) => {
+      if (err) return res.send('server error').status(Settings.HTTPStatus.INTERNAL_SERVER_ERROR);
+      if (result.role != Constantss.UserRoles.ADMIN) return res.send({success:false,msg:'No Admin'}).status(Settings.HTTPStatus.NOT_FOUND);
+      users.deleteOne({_id: userToDelete}, (err,result) => {
+      if (err) {
+          return res.send('server error').status(Settings.HTTPStatus.INTERNAL_SERVER_ERROR);
+        }
+        return res.send('user deleted').status(Settings.HTTPStatus.OK);
+      });
+    });
 });
 app.listen(8000);

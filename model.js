@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const Settings = require('./settings');
 const keygen = require('keygenerator');
+const Constants = require('constants');
 
 
 function generateAPIKey() {
@@ -29,6 +30,7 @@ const UserSchema = new mongoose.Schema( {
     minlength: Settings.Config.password_minlength,
     maxlength: Settings.Config.password_maxlength
   },
+    role: { type: String, enum:Constants.user_role_values, default: 'user' },
   key: {
       type: String,
       default: generateAPIKey,
